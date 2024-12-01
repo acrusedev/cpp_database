@@ -18,7 +18,7 @@ public:
         std::getline(std::cin, buffer);
 
         if (buffer.empty()) {
-            std::cerr << "Error reading input." << std::endl;
+            std::cerr << "Error reading input. Goodbye!" << std::endl;
             exit(EXIT_FAILURE);
         }
     }
