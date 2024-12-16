@@ -2,5 +2,5 @@
 
 enum class MetaCommandResults {
 	SUCCESS,
-	UNREGOGNIZED_COMMAND
+	UNRECOGNIZED_COMMAND,
 };
