@@ -14,5 +14,5 @@ inline auto exec_meta_command(const std::unique_ptr<InputBuffer>& input_buffer) 
 		exit(EXIT_SUCCESS);
 	}
 
-	return MetaCommandResults::UNREGOGNIZED_COMMAND;
+	return MetaCommandResults::UNRECOGNIZED_COMMAND;
 }

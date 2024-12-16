@@ -13,7 +13,7 @@ auto main() -> int {
             switch (exec_meta_command(input_buffer)) {
             case MetaCommandResults::SUCCESS:
                 continue;
-            case MetaCommandResults::UNREGOGNIZED_COMMAND:
+            case MetaCommandResults::UNRECOGNIZED_COMMAND:
                 std::cout << "Unrecognizable META command " << input_buffer->get_buffer() << "\n";
                 break;
             }
