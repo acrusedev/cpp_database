@@ -12,7 +12,7 @@ endif()
 project ("CppDatabase")
 
 # Add source to this project's executable.
-add_executable (CppDatabase "InputBuffer.cpp" "CppDatabase.h")
+add_executable (CppDatabase "CppDatabase.cpp")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET CppDatabase PROPERTY CXX_STANDARD 20)
