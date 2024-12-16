@@ -11,16 +11,11 @@ public:
     InputBuffer() = default;
 
     static auto print_welcome_message() -> void {
-        std::cout << "db > ";
+        std::cout << "db > " << std::flush;
     }
 
     auto read_input() -> void {
         std::getline(std::cin, buffer);
-
-        if (buffer.empty()) {
-            std::cerr << "ERROR while reading input. Input cannot be empty.\n";
-            exit(EXIT_FAILURE);
-        }
     }
 
     [[nodiscard]] auto get_buffer() const -> std::string {
@@ -33,4 +28,8 @@ public:
         }
         return buffer[0];
     };
+
+    [[nodiscard]] auto is_input_empty() const -> bool {
+        return buffer.empty();
+    }
 };
