@@ -1,0 +1,3 @@
+C:/Users/nomin/Desktop/cpp_database/cmake-build-debug/CMakeFiles/CppDatabase.dir
+C:/Users/nomin/Desktop/cpp_database/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/nomin/Desktop/cpp_database/cmake-build-debug/CMakeFiles/rebuild_cache.dir
