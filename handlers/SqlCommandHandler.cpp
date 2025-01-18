@@ -215,7 +215,7 @@ SqlCommandResults SqlCommandHandler::handle_select(const std::vector<std::string
     return SqlCommandResults::SUCCESS;
 }
 
-SqlCommandResults SqlCommandHandler::handle_update(const std::vector<std::string> &tokens)
+SqlCommandResults SqlCommandHandler:: handle_update(const std::vector<std::string> &tokens)
 {
     if (tokens.size() < 5)
     {

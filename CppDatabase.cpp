@@ -7,6 +7,15 @@
 #include "types/enums.hpp"
 #include "handlers/MetaCommandHandler.hpp"
 
+
+// BAZA DANYCH
+// OBSLUGIWANE POLECENIA: DQL: SELECT * FROM TABLE, SELECT COL_1, COL_2 FROM TABLE, SELECT * FROM WHERE CONDITION, SELECT * FROM WHERE CONDITION_1 AND/OR CONDITION_2
+//                        DDL: CREATE TABLE TABLE_NAME (COL_NAME, COL_TYPE(INTEGER, BOOL, TEXT), PRIMARY KEY, IS NULLABLE)
+//                        DML: INSERT INTO TABLE_NAME (VALUE1, VALUE2, ...), UPDATE USERS SET NAME = JAN WHERE ID = 2
+
+
+
+
 void print_tables(const DatabasePersistence& db) {
     auto tables = db.list_tables();
     if (tables.empty()) {

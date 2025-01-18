@@ -68,3 +68,8 @@
 6	1016	7589278772491418	CMakeFiles/CppDatabase.dir/CppDatabase.cpp.obj	a9ae0c0948f40d6e
 10	1410	7589278772531226	CMakeFiles/CppDatabase.dir/handlers/SqlCommandHandler.cpp.obj	d6e3e30b5ef49198
 1410	1769	7589278786520711	CppDatabase.exe	bb5f32fb953eb0b2
+3	989	7589291053428913	CMakeFiles/CppDatabase.dir/CppDatabase.cpp.obj	a9ae0c0948f40d6e
+990	1350	7589291063279480	CppDatabase.exe	bb5f32fb953eb0b2
+4	957	7589293779021936	CMakeFiles/CppDatabase.dir/class_definitions/Table.cpp.obj	671dfc054956420d
+8	1407	7589293779052643	CMakeFiles/CppDatabase.dir/handlers/SqlCommandHandler.cpp.obj	d6e3e30b5ef49198
+1407	1765	7589293793041992	CppDatabase.exe	bb5f32fb953eb0b2

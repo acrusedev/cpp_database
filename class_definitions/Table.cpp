@@ -95,21 +95,47 @@ std::vector<Row> Table::select(const std::vector<std::string>& select_columns,
     return result;
 }
 
-void Table::update(const std::string& column,
-                  const std::string& value,
-                  const std::string& where_condition) {
-    // TODO: Implement WHERE condition parsing
+void Table::update(const std::string& column, const std::string& value, const std::string& where_condition) {
+    // Sprawdź czy kolumna istnieje
     auto it = std::find_if(columns.begin(), columns.end(),
         [&column](const Column& col) {
             return col.name == column;
         });
 
     if (it == columns.end()) {
-        throw std::runtime_error("Column not found: " + column);
+        throw std::runtime_error("Kolumna nie istnieje: " + column);
     }
 
+    // Parsuj warunek WHERE
+    if (where_condition.empty()) {
+        // Jeśli nie ma warunku WHERE, zaktualizuj wszystkie wiersze
+        for (auto& row : rows) {
+            row.data[column] = value;
+        }
+        return;
+    }
+
+    // Format warunku WHERE: "ID = 2"
+    size_t pos = where_condition.find('=');
+    if (pos == std::string::npos) {
+        throw std::runtime_error("Nieprawidłowy warunek WHERE");
+    }
+
+    std::string where_column = where_condition.substr(0, pos);
+    std::string where_value = where_condition.substr(pos + 1);
+
+    // Usuń białe znaki
+    where_column.erase(0, where_column.find_first_not_of(" "));
+    where_column.erase(where_column.find_last_not_of(" ") + 1);
+    where_value.erase(0, where_value.find_first_not_of(" "));
+    where_value.erase(where_value.find_last_not_of(" ") + 1);
+
+    // Aktualizuj tylko wiersze spełniające warunek
     for (auto& row : rows) {
-        row.data[column] = value;
+        auto where_it = row.data.find(where_column);
+        if (where_it != row.data.end() && where_it->second == where_value) {
+            row.data[column] = value;
+        }
     }
 }
 
