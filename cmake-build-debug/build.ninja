@@ -70,12 +70,12 @@ build CMakeFiles/CppDatabase.dir/class_definitions/DatabasePersistence.cpp.obj: 
   OBJECT_DIR = CMakeFiles\CppDatabase.dir
   OBJECT_FILE_DIR = CMakeFiles\CppDatabase.dir\class_definitions
 
-build CMakeFiles/CppDatabase.dir/class_definitions/SQLParser.cpp.obj: CXX_COMPILER__CppDatabase_unscanned_Debug C$:/Users/nomin/Desktop/cpp_database/class_definitions/SQLParser.cpp || cmake_object_order_depends_target_CppDatabase
-  DEP_FILE = CMakeFiles\CppDatabase.dir\class_definitions\SQLParser.cpp.obj.d
+build CMakeFiles/CppDatabase.dir/handlers/SqlCommandHandler.cpp.obj: CXX_COMPILER__CppDatabase_unscanned_Debug C$:/Users/nomin/Desktop/cpp_database/handlers/SqlCommandHandler.cpp || cmake_object_order_depends_target_CppDatabase
+  DEP_FILE = CMakeFiles\CppDatabase.dir\handlers\SqlCommandHandler.cpp.obj.d
   FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
   INCLUDES = -IC:/Users/nomin/Desktop/cpp_database
   OBJECT_DIR = CMakeFiles\CppDatabase.dir
-  OBJECT_FILE_DIR = CMakeFiles\CppDatabase.dir\class_definitions
+  OBJECT_FILE_DIR = CMakeFiles\CppDatabase.dir\handlers
 
 
 # =============================================================================
@@ -85,7 +85,7 @@ build CMakeFiles/CppDatabase.dir/class_definitions/SQLParser.cpp.obj: CXX_COMPIL
 #############################################
 # Link the executable CppDatabase.exe
 
-build CppDatabase.exe: CXX_EXECUTABLE_LINKER__CppDatabase_Debug CMakeFiles/CppDatabase.dir/CppDatabase.cpp.obj CMakeFiles/CppDatabase.dir/class_definitions/Table.cpp.obj CMakeFiles/CppDatabase.dir/class_definitions/DatabasePersistence.cpp.obj CMakeFiles/CppDatabase.dir/class_definitions/SQLParser.cpp.obj
+build CppDatabase.exe: CXX_EXECUTABLE_LINKER__CppDatabase_Debug CMakeFiles/CppDatabase.dir/CppDatabase.cpp.obj CMakeFiles/CppDatabase.dir/class_definitions/Table.cpp.obj CMakeFiles/CppDatabase.dir/class_definitions/DatabasePersistence.cpp.obj CMakeFiles/CppDatabase.dir/handlers/SqlCommandHandler.cpp.obj
   FLAGS = -g
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\CppDatabase.dir

@@ -9,7 +9,7 @@ add_executable(${PROJECT_NAME}
     CppDatabase.cpp
     class_definitions/Table.cpp
     class_definitions/DatabasePersistence.cpp
-        class_definitions/SQLParser.cpp
+        handlers/SqlCommandHandler.cpp
 )
 
 # Dodaj ścieżki include

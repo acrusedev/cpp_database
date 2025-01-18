@@ -18,7 +18,6 @@ struct Row {
 };
 
 class Table {
-private:
     std::string name;
     std::vector<Column> columns;
     std::vector<Row> rows;
@@ -40,7 +39,6 @@ public:
                 const std::string& value,
                 const std::string& where_condition);
     void delete_rows(const std::string& where_condition);
-
     // Gettery
     [[nodiscard]] const std::string& get_name() const { return name; }
     [[nodiscard]] const std::vector<Column>& get_columns() const { return columns; }

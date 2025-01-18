@@ -2,68 +2,76 @@
 #include <string>
 #include <memory>
 #include "class_definitions/DatabasePersistence.hpp"
-#include "class_definitions/SQLParser.hpp"
-
-void print_welcome() {
-    std::cout << "Example supported SQL queries: \n";
-    std::cout << "CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT)\n";
-    std::cout << "INSERT INTO users (1, Jan)\n";
-    std::cout << "SELECT */id/name/**/* FROM users\n";
-    std::cout << "DROP TABLE users\n";
-}
+#include "handlers/SqlCommandHandler.hpp"
+#include "class_definitions/InputBuffer.hpp"
+#include "types/enums.hpp"
+#include "handlers/MetaCommandHandler.hpp"
 
 void print_tables(const DatabasePersistence& db) {
     auto tables = db.list_tables();
     if (tables.empty()) {
-        std::cout << "Brak tabel w bazie danych.\n";
+        std::cout << "No tables found.\n";
     } else {
-        std::cout << "Dostępne tabele:\n";
+        std::cout << "Found tables:\n";
         for (const auto& table : tables) {
-            std::cout << "- " << table << "\n";
+            std::cout << "*" << table << "\n";
         }
     }
     std::cout << std::endl;
 }
 
 int main() {
-    print_welcome();
+    const auto input_buffer = std::make_unique<InputBuffer>();
+    const auto db = std::make_shared<DatabasePersistence>("./data");
+    auto sql_handler = SqlCommandHandler(db);
 
-    auto db = std::make_shared<DatabasePersistence>("./data");
-    SQLParser parser(db);
-
-    // Wyświetl dostępne tabele przy starcie
     print_tables(*db);
 
-    std::string line;
+    InputBuffer::print_welcome_message();
     while (true) {
-        std::cout << "sql> ";
-        std::getline(std::cin, line);
+        InputBuffer::print_ready_query();
+        input_buffer->read_input();
 
-        if (line.empty()) {
+        if (input_buffer->is_input_empty()) {
+            std::cout << "Input buffer is empty. Please enter a valid command." << std::flush;
             continue;
         }
 
-        try {
-            parser.execute_query(line);
-        } catch (const std::exception& e) {
-            std::cout << "Błąd: " << e.what() << "\n";
-            
-            // Pokaż przykład użycia w zależności od komendy
-            if (line.find("CREATE") != std::string::npos) {
-                std::cout << "Przykład: CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT)\n";
+        if (input_buffer->get_buffer_first_char() == '.') {
+            switch (MetaCommandHandler::exec_meta_command(input_buffer)) {
+                case MetaCommandResults::SUCCESS:
+                    continue;
+                case MetaCommandResults::UNRECOGNIZED_COMMAND:
+                    std::cout << "ERROR: Unknown meta command " << input_buffer->get_buffer() << "\n";
+                    continue;
             }
-            else if (line.find("INSERT") != std::string::npos) {
-                std::cout << "Przykład: INSERT INTO users (1, Jan)\n";
-            }
-            else if (line.find("SELECT") != std::string::npos) {
-                std::cout << "Przykład: SELECT * FROM users\n";
-            }
-            else if (line.find("UPDATE") != std::string::npos) {
-                std::cout << "Przykład: UPDATE users SET name = Jan WHERE id = 1\n";
-            }
-            else if (line.find("DELETE") != std::string::npos) {
-                std::cout << "Przykład: DELETE FROM users WHERE id = 1\n";
-            }
+        }
+
+        switch (sql_handler.exec_sql_command(input_buffer)) {
+            case SqlCommandResults::SUCCESS:
+                break;
+            case SqlCommandResults::UNKNOWN_ERROR:
+                std::cout << "ERROR: Unknown error occurred\n";
+                break;
+            case SqlCommandResults::UNKNOWN_COMMAND:
+                std::cout << "ERROR: Unknown command " <<  input_buffer->get_buffer() << "\n";
+                break;
+            case SqlCommandResults::TABLE_NOT_FOUND:
+                std::cout << "ERROR: Table not found\n";
+                break;
+            case SqlCommandResults::TABLE_ALREADY_EXISTS:
+                std::cout << "ERROR: Table already exists\n";
+                break;
+            case SqlCommandResults::INCORRECT_EXPRESSION:
+                std::cout << "ERROR: Incorrect SQL expression\n";
+                break;
+            case SqlCommandResults::EMPTY_QUERY:
+                std::cout << "ERROR: Empty query\n";
+                break;
+            case SqlCommandResults::TABLE_DOES_NOT_EXIST:
+                std::cout << "ERROR: Table does not exist\n";
+                break;
+            default: ;
         }
     }
 

@@ -3,20 +3,20 @@
 #include <algorithm>
 
 void Table::add_column(const Column& column) {
-    auto it = std::find_if(columns.begin(), columns.end(),
-        [&column](const Column& existing) {
-            return existing.name == column.name;
-        });
+    const auto it = std::ranges::find_if(columns,
+                                         [&column](const Column& existing) {
+                                             return existing.name == column.name;
+                                         });
     
     if (it != columns.end()) {
         throw std::runtime_error("Column already exists: " + column.name);
     }
 
     if (column.is_primary_key) {
-        auto pk = std::find_if(columns.begin(), columns.end(),
-            [](const Column& existing) {
-                return existing.is_primary_key;
-            });
+        const auto pk = std::ranges::find_if(columns,
+                                             [](const Column& existing) {
+                                                 return existing.is_primary_key;
+                                             });
         
         if (pk != columns.end()) {
             throw std::runtime_error("Table already has a primary key: " + pk->name);
@@ -28,10 +28,10 @@ void Table::add_column(const Column& column) {
 }
 
 void Table::set_primary_key(const std::string& column_name) {
-    auto it = std::find_if(columns.begin(), columns.end(),
-        [&column_name](const Column& column) {
-            return column.name == column_name;
-        });
+    auto it = std::ranges::find_if(columns,
+                                   [&column_name](const Column& column) {
+                                       return column.name == column_name;
+                                   });
     
     if (it == columns.end()) {
         throw std::runtime_error("Column not found: " + column_name);
@@ -45,20 +45,6 @@ void Table::set_primary_key(const std::string& column_name) {
 
     it->is_primary_key = true;
     primary_key_column = column_name;
-}
-
-void Table::add_foreign_key(const std::string& column_name, 
-                          const std::string& foreign_table, 
-                          const std::string& foreign_column) {
-    auto it = std::find_if(columns.begin(), columns.end(),
-        [&column_name](const Column& column) {
-            return column.name == column_name;
-        });
-    
-    if (it == columns.end()) {
-        throw std::runtime_error("Column not found: " + column_name);
-    }
-
 }
 
 void Table::insert_row(const Row& row) {

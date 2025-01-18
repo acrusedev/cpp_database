@@ -11,6 +11,14 @@ public:
     InputBuffer() = default;
 
     static auto print_welcome_message() -> void {
+        std::cout << "Example supported SQL queries: \n";
+        std::cout << "CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT)\n";
+        std::cout << "INSERT INTO users (1, Jan)\n";
+        std::cout << "SELECT */id/name/**/* FROM users\n";
+        std::cout << "DROP TABLE users\n";
+    }
+
+    static auto print_ready_query() -> void {
         std::cout << "db > " << std::flush;
     }
 

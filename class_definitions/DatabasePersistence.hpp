@@ -6,8 +6,8 @@
 
 class DatabasePersistence {
 private:
-    static constexpr const char* SCHEMA_EXTENSION = ".schema";
-    static constexpr const char* DATA_EXTENSION = ".data";
+    static constexpr auto SCHEMA_EXTENSION = ".schema";
+    static constexpr auto DATA_EXTENSION = ".data";
     std::string db_directory;
 
 public:
@@ -16,13 +16,13 @@ public:
         std::filesystem::create_directories(db_directory);
     }
 
-    auto save_table_schema(const Table& table) -> void;
-    auto save_table_data(const Table& table) -> void;
-    std::unique_ptr<Table> load_table(const std::string& table_name);
-    auto delete_table(const std::string& table_name) -> void;
-    std::vector<std::string> list_tables() const;
+    auto save_table_schema(const Table& table) const -> void;
+    auto save_table_data(const Table& table) const -> void;
+    auto delete_table(const std::string& table_name) const -> void;
+    [[nodiscard]] auto load_table(const std::string& table_name) const -> std::unique_ptr<Table>;
+    [[nodiscard]] auto list_tables() const -> std::vector<std::string>;
 
 private:
-    auto get_schema_path(const std::string& table_name) const -> std::string;
-    auto get_data_path(const std::string& table_name) const -> std::string;
+    [[nodiscard]] auto get_schema_path(const std::string& table_name) const -> std::string;
+    [[nodiscard]] auto get_data_path(const std::string& table_name) const -> std::string;
 }; 
