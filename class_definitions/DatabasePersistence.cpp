@@ -1,4 +1,6 @@
 #include "DatabasePersistence.hpp"
+
+#include <algorithm>
 #include <fstream>
 #include <sstream>
 
@@ -21,13 +23,36 @@ auto DatabasePersistence::save_table_schema(const Table& table) const -> void {
     
     for (const auto&[name, type, is_primary_key, is_nullable] : columns) {
         file << name << "|"
-             << type << "|"
+             << column_type_to_string(type) << "|"
              << (is_primary_key ? "1" : "0") << "|"
-             << (is_nullable ? "1" : "0");
-
-        file << "\n";
+             << (is_nullable ? "1" : "0") << "\n";
     }
 }
+static auto to_upper(std::string& str) -> std::string {
+    std::ranges::transform(str, str.begin(), ::toupper);
+}
+
+auto DatabasePersistence::string_to_column_type(const std::string& column_type) -> ColumnType {
+    if (column_type == "INTEGER") return ColumnType::INTEGER;
+    if (column_type == "BOOLEAN") return ColumnType::BOOLEAN;
+    if (column_type == "TEXT") return ColumnType::TEXT;
+    throw std::runtime_error("Unknown column type: " + column_type);
+}
+
+auto DatabasePersistence::column_type_to_string(const ColumnType& type) -> std::string {
+    switch (type) {
+        case ColumnType::INTEGER:
+            return "INTEGER";
+        case ColumnType::BOOLEAN:
+            return "BOOLEAN";
+        case ColumnType::TEXT:
+            return "TEXT";
+        default:
+            return "TEXT";
+    }
+}
+
+
 
 auto DatabasePersistence::save_table_data(const Table& table) const -> void {
     std::ofstream file(get_data_path(table.get_name()));
@@ -71,7 +96,9 @@ auto DatabasePersistence::load_table(const std::string& table_name) const -> std
 
         if (!std::getline(string_stream, column.name, '|')) break;
 
-        if (!std::getline(string_stream, column.type, '|')) break;
+        std::string type_str;
+        if (!std::getline(string_stream, type_str, '|')) break;
+        column.type = string_to_column_type(type_str);
 
         std::string is_primary_key;
         if (!std::getline(string_stream, is_primary_key, '|')) break;

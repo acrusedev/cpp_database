@@ -200,7 +200,7 @@ SqlCommandResults SqlCommandHandler::handle_select(const std::vector<std::string
     }
 
 
-    std::unordered_map<auto, auto> col_widths;
+    std::unordered_map<std::string, size_t> col_widths;
     for (const auto &col : columns)
     {
         col_widths[col] = col.length();
@@ -336,7 +336,7 @@ std::vector<Column> SqlCommandHandler::parse_columns_definition(const std::vecto
 
         if (position >= tokens.size())
             break;
-        col.type = tokens[position++];
+        col.type = DatabasePersistence::string_to_column_type(tokens[position++]);
 
         col.is_primary_key = false;
         col.is_nullable = true;

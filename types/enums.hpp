@@ -1,11 +1,13 @@
 #pragma once
 
-enum class MetaCommandResults {
+enum class MetaCommandResults
+{
 	SUCCESS,
 	UNRECOGNIZED_COMMAND,
 };
 
-enum class SqlCommandResults {
+enum class SqlCommandResults
+{
 	SUCCESS,
 	UNKNOWN_ERROR,
 	UNKNOWN_COMMAND,
@@ -14,4 +16,11 @@ enum class SqlCommandResults {
 	TABLE_ALREADY_EXISTS,
 	INCORRECT_EXPRESSION,
 	EMPTY_QUERY
+};
+
+enum class ColumnType
+{
+	INTEGER,
+	TEXT,
+	BOOLEAN,
 };

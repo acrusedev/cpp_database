@@ -7,7 +7,7 @@ void Table::add_column(const Column& column) {
                                          [&column](const Column& existing) {
                                              return existing.name == column.name;
                                          });
-    
+
     if (it != columns.end()) {
         throw std::runtime_error("Column already exists: " + column.name);
     }
@@ -17,7 +17,7 @@ void Table::add_column(const Column& column) {
                                              [](const Column& existing) {
                                                  return existing.is_primary_key;
                                              });
-        
+
         if (pk != columns.end()) {
             throw std::runtime_error("Table already has a primary key: " + pk->name);
         }
@@ -32,7 +32,7 @@ void Table::set_primary_key(const std::string& column_name) {
                                    [&column_name](const Column& column) {
                                        return column.name == column_name;
                                    });
-    
+
     if (it == columns.end()) {
         throw std::runtime_error("Column not found: " + column_name);
     }
@@ -74,7 +74,7 @@ std::vector<Row> Table::select(const std::vector<std::string>& select_columns,
                              const std::optional<std::string>& where_condition) {
     // TODO: Implement WHERE condition parsing
     std::vector<Row> result;
-    
+
     if (select_columns.empty()) {
         return rows;
     }
@@ -93,7 +93,7 @@ std::vector<Row> Table::select(const std::vector<std::string>& select_columns,
     return result;
 }
 
-void Table::update(const std::string& column, 
+void Table::update(const std::string& column,
                   const std::string& value,
                   const std::string& where_condition) {
     // TODO: Implement WHERE condition parsing
@@ -101,7 +101,7 @@ void Table::update(const std::string& column,
         [&column](const Column& col) {
             return col.name == column;
         });
-    
+
     if (it == columns.end()) {
         throw std::runtime_error("Column not found: " + column);
     }
@@ -114,4 +114,20 @@ void Table::update(const std::string& column,
 void Table::delete_rows(const std::string& where_condition) {
     // TODO: Implement WHERE condition parsing
     rows.clear();
-} 
+}
+
+auto Table::string_to_column_type(const std::string& type_str) -> ColumnType {
+    if (type_str == "INTEGER") return ColumnType::INTEGER;
+    if (type_str == "BOOLEAN") return ColumnType::BOOLEAN;
+    if (type_str == "TEXT") return ColumnType::TEXT;
+    throw std::runtime_error("Unknown column type: " + type_str);
+}
+
+auto Table::column_type_to_string(ColumnType type) -> std::string {
+    switch (type) {
+        case ColumnType::INTEGER: return "INTEGER";
+        case ColumnType::BOOLEAN: return "BOOLEAN";
+        case ColumnType::TEXT: return "TEXT";
+        default: return "TEXT";
+    }
+}

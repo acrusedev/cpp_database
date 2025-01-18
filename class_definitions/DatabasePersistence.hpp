@@ -21,6 +21,8 @@ public:
     auto delete_table(const std::string& table_name) const -> void;
     [[nodiscard]] auto load_table(const std::string& table_name) const -> std::unique_ptr<Table>;
     [[nodiscard]] auto list_tables() const -> std::vector<std::string>;
+    static auto string_to_column_type(const std::string& column_type) -> ColumnType;
+    static auto column_type_to_string(const ColumnType& type) -> std::string;
 
 private:
     [[nodiscard]] auto get_schema_path(const std::string& table_name) const -> std::string;
