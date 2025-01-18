@@ -126,79 +126,47 @@ SqlCommandResults SqlCommandHandler::handle_insert(const std::vector<std::string
     return SqlCommandResults::SUCCESS;
 }
 
-SqlCommandResults SqlCommandHandler::handle_select(const std::vector<std::string> &tokens)
-{
-    if (tokens.size() < 4)
-    {
+SqlCommandResults SqlCommandHandler::handle_select(const std::vector<std::string>& tokens) {
+    if (tokens.size() < 4) {
         return SqlCommandResults::INCORRECT_EXPRESSION;
     }
 
-    auto pos = 1;
+    int pos = 1;
     std::vector<std::string> columns;
 
-    if (tokens[1] == "*")
-    {
+    if (tokens[pos] == "*") {
         pos++;
-    }
-    else
-    {
-        columns = parse_column_list(tokens, pos);
+    } else {
+        while (pos < tokens.size() && tokens[pos] != "FROM") {
+            if (tokens[pos] != ",") {
+                columns.push_back(tokens[pos]);
+            }
+            pos++;
+        }
     }
 
-    if (pos >= tokens.size() || tokens[pos] != "FROM")
-    {
+    if (pos >= tokens.size() || tokens[pos] != "FROM") {
         return SqlCommandResults::INCORRECT_EXPRESSION;
     }
     pos++;
 
-    const auto &table_name = tokens[pos++];
-    const auto table = db->load_table(table_name);
+    if (pos >= tokens.size()) {
+        return SqlCommandResults::INCORRECT_EXPRESSION;
+    }
+    const auto& table_name = tokens[pos];
+    auto table = db->load_table(table_name);
 
-    if (tokens[1] == "*")
-    {
-        columns.clear();
-        for (const auto &col : table->get_columns())
-        {
+    if (columns.empty()) {
+        for (const auto& col : table->get_columns()) {
             columns.push_back(col.name);
         }
     }
-    else
-    {
-        const auto &table_columns = table->get_columns();
-        for (const auto &requested_col : columns)
-        {
-            bool found = false;
-            for (const auto &table_col : table_columns)
-            {
-                if (table_col.name == requested_col)
-                {
-                    found = true;
-                    break;
-                }
-            }
-            if (!found)
-            {
-                return SqlCommandResults::INCORRECT_EXPRESSION;
-            }
-        }
-    }
 
-    std::optional<std::string> where_condition;
-    if (pos < tokens.size() && tokens[pos] == "WHERE")
-    {
-        pos++;
-        auto [condition, _] = parse_where_clause(tokens, pos);
-        where_condition = condition;
-    }
-
-    auto results = table->select(columns, where_condition);
-
-    if (results.empty())
-    {
+    auto results = table->select(columns);
+    if (results.empty()) {
         std::cout << "Brak wyników.\n";
         return SqlCommandResults::SUCCESS;
     }
-
 
     std::unordered_map<std::string, size_t> col_widths;
     for (const auto &col : columns)
@@ -378,17 +346,18 @@ std::vector<Column> SqlCommandHandler::parse_columns_definition(const std::vecto
 std::vector<std::string> SqlCommandHandler::parse_column_list(const std::vector<std::string> &tokens, int position)
 {
     std::vector<std::string> columns;
-
-    while (position < tokens.size() && tokens[position] != "FROM" && tokens[position] != "WHERE")
-    {
-        if (tokens[position] == ",")
-        {
-            position++;
-            continue;
+    
+    while (position < tokens.size() && tokens[position] != "FROM" && tokens[position] != "WHERE") {
+        if (tokens[position] != ",") {
+            columns.push_back(tokens[position]);
         }
-        columns.push_back(tokens[position++]);
+        position++;
     }
-
+    
+    if (columns.empty()) {
+        throw std::runtime_error("No columns specified in SELECT statement");
+    }
+    
     return columns;
 }
 

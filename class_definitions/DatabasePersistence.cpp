@@ -28,8 +28,8 @@ auto DatabasePersistence::save_table_schema(const Table& table) const -> void {
              << (is_nullable ? "1" : "0") << "\n";
     }
 }
-static auto to_upper(std::string& str) -> std::string {
-    std::ranges::transform(str, str.begin(), ::toupper);
+static auto to_upper(std::string& str) {
+   return  std::ranges::transform(str, str.begin(), ::toupper);
 }
 
 auto DatabasePersistence::string_to_column_type(const std::string& column_type) -> ColumnType {
