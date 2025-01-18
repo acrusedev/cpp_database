@@ -131,9 +131,9 @@ SqlCommandResults SqlCommandHandler::handle_select(const std::vector<std::string
         return SqlCommandResults::INCORRECT_EXPRESSION;
     }
 
-    int pos = 1;
+    size_t pos = 1;
     std::vector<std::string> columns;
-
+    
     if (tokens[pos] == "*") {
         pos++;
     } else {
@@ -144,25 +144,55 @@ SqlCommandResults SqlCommandHandler::handle_select(const std::vector<std::string
             pos++;
         }
     }
-
+    
     if (pos >= tokens.size() || tokens[pos] != "FROM") {
         return SqlCommandResults::INCORRECT_EXPRESSION;
     }
     pos++;
-
+    
     if (pos >= tokens.size()) {
         return SqlCommandResults::INCORRECT_EXPRESSION;
     }
     const auto& table_name = tokens[pos];
     auto table = db->load_table(table_name);
-
+    pos++;
+    
     if (columns.empty()) {
         for (const auto& col : table->get_columns()) {
             columns.push_back(col.name);
         }
     }
 
-    auto results = table->select(columns);
+    std::vector<Row> results;
+    
+    // Sprawdź czy jest WHERE
+    if (pos < tokens.size() && tokens[pos] == "WHERE") {
+        pos++;
+        if (pos + 2 >= tokens.size()) {  // potrzebujemy kolumny, operatora i wartości
+            return SqlCommandResults::INCORRECT_EXPRESSION;
+        }
+        
+        WhereCondition condition;
+        condition.column = tokens[pos++];
+        
+        // Operator
+        const auto& op = tokens[pos++];
+        if (op == "=") condition.op = WhereOperator::EQUALS;
+        else if (op == ">") condition.op = WhereOperator::GREATER;
+        else if (op == "<") condition.op = WhereOperator::LESS;
+        else if (op == ">=") condition.op = WhereOperator::GREATER_EQ;
+        else if (op == "<=") condition.op = WhereOperator::LESS_EQ;
+        else return SqlCommandResults::INCORRECT_EXPRESSION;
+        
+        condition.value = tokens[pos];
+        
+        WhereClause where;
+        where.conditions.push_back(condition);
+        results = table->select_where(columns, where);
+    } else {
+        results = table->select(columns);
+    }
+
     if (results.empty()) {
         std::cout << "Brak wyników.\n";
         return SqlCommandResults::SUCCESS;

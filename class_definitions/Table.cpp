@@ -2,6 +2,8 @@
 #include <stdexcept>
 #include <algorithm>
 
+
+
 void Table::add_column(const Column& column) {
     const auto it = std::ranges::find_if(columns,
                                          [&column](const Column& existing) {
@@ -130,4 +132,59 @@ auto Table::column_type_to_string(ColumnType type) -> std::string {
         case ColumnType::TEXT: return "TEXT";
         default: return "TEXT";
     }
+}
+
+std::vector<Row> Table::select_where(const std::vector<std::string>& columns, const WhereClause& where) {
+    std::vector<Row> result;
+    
+    for (const auto& row : rows) {
+        bool matches = true;
+        
+        for (const auto& condition : where.conditions) {
+            auto it = row.data.find(condition.column);
+            if (it == row.data.end()) {
+                matches = false;
+                break;
+            }
+            
+            const std::string& row_value = it->second;
+            
+            switch (condition.op) {
+                case WhereOperator::EQUALS:
+                    matches = (row_value == condition.value);
+                    break;
+                case WhereOperator::GREATER:
+                    matches = (std::stoi(row_value) > std::stoi(condition.value));
+                    break;
+                case WhereOperator::LESS:
+                    matches = (std::stoi(row_value) < std::stoi(condition.value));
+                    break;
+                case WhereOperator::GREATER_EQ:
+                    matches = (std::stoi(row_value) >= std::stoi(condition.value));
+                    break;
+                case WhereOperator::LESS_EQ:
+                    matches = (std::stoi(row_value) <= std::stoi(condition.value));
+                    break;
+            }
+            
+            if (!matches) break;
+        }
+        
+        if (matches) {
+            if (columns.empty()) {
+                result.push_back(row);
+            } else {
+                Row filtered_row;
+                for (const auto& col : columns) {
+                    auto it = row.data.find(col);
+                    if (it != row.data.end()) {
+                        filtered_row.data[col] = it->second;
+                    }
+                }
+                result.push_back(filtered_row);
+            }
+        }
+    }
+    
+    return result;
 }
