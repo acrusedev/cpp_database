@@ -16,13 +16,13 @@ public:
         std::filesystem::create_directories(db_directory);
     }
 
-    void save_table_schema(const Table& table);
-    void save_table_data(const Table& table);
+    auto save_table_schema(const Table& table) -> void;
+    auto save_table_data(const Table& table) -> void;
     std::unique_ptr<Table> load_table(const std::string& table_name);
-    void delete_table(const std::string& table_name);
+    auto delete_table(const std::string& table_name) -> void;
     std::vector<std::string> list_tables() const;
 
 private:
-    std::string get_schema_path(const std::string& table_name) const;
-    std::string get_data_path(const std::string& table_name) const;
+    auto get_schema_path(const std::string& table_name) const -> std::string;
+    auto get_data_path(const std::string& table_name) const -> std::string;
 }; 

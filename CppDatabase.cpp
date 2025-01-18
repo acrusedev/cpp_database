@@ -5,11 +5,11 @@
 #include "class_definitions/SQLParser.hpp"
 
 void print_welcome() {
-    std::cout << "CppDatabase - Prosta baza danych SQL\n";
-    std::cout << "Przykłady:\n";
+    std::cout << "Example supported SQL queries: \n";
     std::cout << "CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT)\n";
     std::cout << "INSERT INTO users (1, Jan)\n";
-    std::cout << "SELECT * FROM users\n\n";
+    std::cout << "SELECT */id/name/**/* FROM users\n";
+    std::cout << "DROP TABLE users\n";
 }
 
 void print_tables(const DatabasePersistence& db) {
@@ -41,10 +41,6 @@ int main() {
 
         if (line.empty()) {
             continue;
-        }
-
-        if (line == "exit") {
-            break;
         }
 
         try {

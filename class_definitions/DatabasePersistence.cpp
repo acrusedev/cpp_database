@@ -21,11 +21,7 @@ void DatabasePersistence::save_table_schema(const Table& table) {
              << col.type << "|"
              << (col.is_primary_key ? "1" : "0") << "|"
              << (col.is_nullable ? "1" : "0");
-        
-        if (col.foreign_key_table) {
-            file << "|" << *col.foreign_key_table 
-                 << "|" << *col.foreign_key_column;
-        }
+
         file << "\n";
     }
 }
@@ -87,16 +83,6 @@ std::unique_ptr<Table> DatabasePersistence::load_table(const std::string& table_
         std::string is_null;
         if (!std::getline(ss, is_null, '|')) break;
         column.is_nullable = (is_null == "1");
-        
-        // Foreign key (opcjonalne)
-        std::string foreign_table;
-        if (std::getline(ss, foreign_table, '|')) {
-            std::string foreign_column;
-            if (std::getline(ss, foreign_column, '|')) {
-                column.foreign_key_table = foreign_table;
-                column.foreign_key_column = foreign_column;
-            }
-        }
         
         table->add_column(column);
     }

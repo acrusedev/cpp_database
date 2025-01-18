@@ -59,8 +59,6 @@ void Table::add_foreign_key(const std::string& column_name,
         throw std::runtime_error("Column not found: " + column_name);
     }
 
-    it->foreign_key_table = foreign_table;
-    it->foreign_key_column = foreign_column;
 }
 
 void Table::insert_row(const Row& row) {

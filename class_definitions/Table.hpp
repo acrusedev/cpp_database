@@ -11,8 +11,6 @@ struct Column {
     std::string type;
     bool is_primary_key = false;
     bool is_nullable = true;
-    std::optional<std::string> foreign_key_table;
-    std::optional<std::string> foreign_key_column;
 };
 
 struct Row {

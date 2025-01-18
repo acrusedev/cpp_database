@@ -51,28 +51,28 @@ build cmake_object_order_depends_target_CppDatabase: phony || .
 
 build CMakeFiles/CppDatabase.dir/CppDatabase.cpp.obj: CXX_COMPILER__CppDatabase_unscanned_Debug C$:/Users/nomin/Desktop/cpp_database/CppDatabase.cpp || cmake_object_order_depends_target_CppDatabase
   DEP_FILE = CMakeFiles\CppDatabase.dir\CppDatabase.cpp.obj.d
-  FLAGS = -g -std=gnu++17 -fdiagnostics-color=always
+  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
   INCLUDES = -IC:/Users/nomin/Desktop/cpp_database
   OBJECT_DIR = CMakeFiles\CppDatabase.dir
   OBJECT_FILE_DIR = CMakeFiles\CppDatabase.dir
 
 build CMakeFiles/CppDatabase.dir/class_definitions/Table.cpp.obj: CXX_COMPILER__CppDatabase_unscanned_Debug C$:/Users/nomin/Desktop/cpp_database/class_definitions/Table.cpp || cmake_object_order_depends_target_CppDatabase
   DEP_FILE = CMakeFiles\CppDatabase.dir\class_definitions\Table.cpp.obj.d
-  FLAGS = -g -std=gnu++17 -fdiagnostics-color=always
+  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
   INCLUDES = -IC:/Users/nomin/Desktop/cpp_database
   OBJECT_DIR = CMakeFiles\CppDatabase.dir
   OBJECT_FILE_DIR = CMakeFiles\CppDatabase.dir\class_definitions
 
 build CMakeFiles/CppDatabase.dir/class_definitions/DatabasePersistence.cpp.obj: CXX_COMPILER__CppDatabase_unscanned_Debug C$:/Users/nomin/Desktop/cpp_database/class_definitions/DatabasePersistence.cpp || cmake_object_order_depends_target_CppDatabase
   DEP_FILE = CMakeFiles\CppDatabase.dir\class_definitions\DatabasePersistence.cpp.obj.d
-  FLAGS = -g -std=gnu++17 -fdiagnostics-color=always
+  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
   INCLUDES = -IC:/Users/nomin/Desktop/cpp_database
   OBJECT_DIR = CMakeFiles\CppDatabase.dir
   OBJECT_FILE_DIR = CMakeFiles\CppDatabase.dir\class_definitions
 
 build CMakeFiles/CppDatabase.dir/class_definitions/SQLParser.cpp.obj: CXX_COMPILER__CppDatabase_unscanned_Debug C$:/Users/nomin/Desktop/cpp_database/class_definitions/SQLParser.cpp || cmake_object_order_depends_target_CppDatabase
   DEP_FILE = CMakeFiles\CppDatabase.dir\class_definitions\SQLParser.cpp.obj.d
-  FLAGS = -g -std=gnu++17 -fdiagnostics-color=always
+  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
   INCLUDES = -IC:/Users/nomin/Desktop/cpp_database
   OBJECT_DIR = CMakeFiles\CppDatabase.dir
   OBJECT_FILE_DIR = CMakeFiles\CppDatabase.dir\class_definitions
