@@ -36,6 +36,7 @@ struct WhereCondition {
 
 struct WhereClause {
     std::vector<WhereCondition> conditions;
+    bool is_and = false;
 };
 
 class Table

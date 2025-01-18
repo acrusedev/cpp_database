@@ -138,36 +138,46 @@ std::vector<Row> Table::select_where(const std::vector<std::string>& columns, co
     std::vector<Row> result;
     
     for (const auto& row : rows) {
-        bool matches = true;
-        
+        bool matches = where.is_and;
+
         for (const auto& condition : where.conditions) {
             auto it = row.data.find(condition.column);
             if (it == row.data.end()) {
-                matches = false;
-                break;
+                if (where.is_and) {
+                    matches = false;
+                    break;
+                }
+                continue;
             }
-            
+
             const std::string& row_value = it->second;
-            
+            bool condition_matches = false;
+
             switch (condition.op) {
                 case WhereOperator::EQUALS:
-                    matches = (row_value == condition.value);
+                    condition_matches = (row_value == condition.value);
                     break;
                 case WhereOperator::GREATER:
-                    matches = (std::stoi(row_value) > std::stoi(condition.value));
+                    condition_matches = (std::stoi(row_value) > std::stoi(condition.value));
                     break;
                 case WhereOperator::LESS:
-                    matches = (std::stoi(row_value) < std::stoi(condition.value));
+                    condition_matches = (std::stoi(row_value) < std::stoi(condition.value));
                     break;
                 case WhereOperator::GREATER_EQ:
-                    matches = (std::stoi(row_value) >= std::stoi(condition.value));
+                    condition_matches = (std::stoi(row_value) >= std::stoi(condition.value));
                     break;
                 case WhereOperator::LESS_EQ:
-                    matches = (std::stoi(row_value) <= std::stoi(condition.value));
+                    condition_matches = (std::stoi(row_value) <= std::stoi(condition.value));
                     break;
             }
-            
-            if (!matches) break;
+
+            if (where.is_and) {
+                matches &= condition_matches;  // AND
+                if (!matches) break;  // optymalizacja dla AND
+            } else {
+                matches |= condition_matches;  // OR
+                if (matches) break;   // optymalizacja dla OR
+            }
         }
         
         if (matches) {

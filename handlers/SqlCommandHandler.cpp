@@ -131,32 +131,24 @@ SqlCommandResults SqlCommandHandler::handle_select(const std::vector<std::string
         return SqlCommandResults::INCORRECT_EXPRESSION;
     }
 
-    size_t pos = 1;
     std::vector<std::string> columns;
-    
+    size_t pos = 1;
+
     if (tokens[pos] == "*") {
         pos++;
     } else {
-        while (pos < tokens.size() && tokens[pos] != "FROM") {
-            if (tokens[pos] != ",") {
-                columns.push_back(tokens[pos]);
-            }
-            pos++;
-        }
+        columns = parse_column_list(tokens, pos);
+        pos += columns.size();
     }
-    
+
     if (pos >= tokens.size() || tokens[pos] != "FROM") {
         return SqlCommandResults::INCORRECT_EXPRESSION;
     }
     pos++;
-    
-    if (pos >= tokens.size()) {
-        return SqlCommandResults::INCORRECT_EXPRESSION;
-    }
-    const auto& table_name = tokens[pos];
+
+    const auto& table_name = tokens[pos++];
     auto table = db->load_table(table_name);
-    pos++;
-    
+
     if (columns.empty()) {
         for (const auto& col : table->get_columns()) {
             columns.push_back(col.name);
@@ -164,35 +156,18 @@ SqlCommandResults SqlCommandHandler::handle_select(const std::vector<std::string
     }
 
     std::vector<Row> results;
-    
-    // Sprawdź czy jest WHERE
     if (pos < tokens.size() && tokens[pos] == "WHERE") {
         pos++;
-        if (pos + 2 >= tokens.size()) {  // potrzebujemy kolumny, operatora i wartości
+        try {
+            auto where = convert_to_where_clause(tokens, pos);
+            results = table->select_where(columns, where);
+        }
+        catch (const std::runtime_error& e) {
             return SqlCommandResults::INCORRECT_EXPRESSION;
         }
-        
-        WhereCondition condition;
-        condition.column = tokens[pos++];
-        
-        // Operator
-        const auto& op = tokens[pos++];
-        if (op == "=") condition.op = WhereOperator::EQUALS;
-        else if (op == ">") condition.op = WhereOperator::GREATER;
-        else if (op == "<") condition.op = WhereOperator::LESS;
-        else if (op == ">=") condition.op = WhereOperator::GREATER_EQ;
-        else if (op == "<=") condition.op = WhereOperator::LESS_EQ;
-        else return SqlCommandResults::INCORRECT_EXPRESSION;
-        
-        condition.value = tokens[pos];
-        
-        WhereClause where;
-        where.conditions.push_back(condition);
-        results = table->select_where(columns, where);
     } else {
         results = table->select(columns);
     }
-
     if (results.empty()) {
         std::cout << "Brak wyników.\n";
         return SqlCommandResults::SUCCESS;
@@ -403,4 +378,46 @@ std::pair<std::string, std::vector<std::string>> SqlCommandHandler::parse_where_
     }
 
     return {condition, params};
+}
+
+WhereClause SqlCommandHandler::convert_to_where_clause(const std::vector<std::string>& tokens, size_t& pos) const {
+    WhereClause where;
+    where.is_and = true;  // domyślnie AND
+
+    do {
+        if (pos + 2 >= tokens.size()) {
+            throw std::runtime_error("Incomplete WHERE clause");
+        }
+
+        WhereCondition condition;
+        condition.column = tokens[pos++];
+
+        const auto& op = tokens[pos++];
+        if (op == "=") condition.op = WhereOperator::EQUALS;
+        else if (op == ">") condition.op = WhereOperator::GREATER;
+        else if (op == "<") condition.op = WhereOperator::LESS;
+        else if (op == ">=") condition.op = WhereOperator::GREATER_EQ;
+        else if (op == "<=") condition.op = WhereOperator::LESS_EQ;
+        else throw std::runtime_error("Invalid operator in WHERE clause");
+
+        condition.value = tokens[pos++];
+        where.conditions.push_back(condition);
+
+        // Sprawdź czy jest kolejny warunek (AND/OR)
+        if (pos < tokens.size()) {
+            if (tokens[pos] == "AND") {
+                where.is_and = true;
+                pos++;
+            }
+            else if (tokens[pos] == "OR") {
+                where.is_and = false;
+                pos++;
+            }
+            else {
+                break;  // koniec warunków WHERE
+            }
+        }
+    } while (pos < tokens.size());
+
+    return where;
 }

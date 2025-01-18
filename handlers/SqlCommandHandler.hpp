@@ -24,6 +24,8 @@ class SqlCommandHandler {
     static std::vector<std::string> parse_column_list(const std::vector<std::string>& tokens, int position);
     std::pair<std::string, std::vector<std::string>> parse_where_clause(const std::vector<std::string>& tokens, int position);
 
+    WhereClause convert_to_where_clause(const std::vector<std::string> &tokens, size_t &pos) const;
+
 public:
     explicit SqlCommandHandler(std::shared_ptr<DatabasePersistence> database) : db(std::move(database)) {}
     auto exec_sql_command(const std::unique_ptr<InputBuffer>& input_buffer) -> SqlCommandResults;
